@@ -8,7 +8,14 @@ public class ShipController : MonoBehaviour
 
     public float XSpeed;
     public float YSpeed;
+
+    public float XTilt;
+    public float YTilt;
+
     public float smoothSpeed = 0.1f;
+    public float rotSpeed = 0.15f;
+
+
 
     void Start()
     {
@@ -17,19 +24,25 @@ public class ShipController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 moveVector = new Vector3(Input.GetAxis("Horizontal"), -Input.GetAxis("Vertical"), 0); //non normalized - don't want axis raw
+        MoveShip();
+    }
+
+    void MoveShip()
+    {
+        //Movement
+        Vector3 moveVector = new Vector3(Input.GetAxis("Horizontal"), -Input.GetAxis("Vertical"), 0);
         moveVector.x *= XSpeed;
         moveVector.y *= YSpeed;
-
         Vector3 desiredPos = transform.position + moveVector * Time.deltaTime;
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed);
-
         rb.MovePosition(smoothedPos);
 
-        if (moveVector != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveVector), 0.15F);
-            //transform.Translate(moveVector * Time.deltaTime, Space.World);
-        }
+        //Rotation
+        Vector3 moveAngles = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), 0);
+        moveAngles.x *= YTilt;
+        moveAngles.y *= XTilt;
+        Quaternion moveRotation = Quaternion.Euler(moveAngles);
+        Quaternion smoothedRot = Quaternion.Lerp(transform.rotation, moveRotation, rotSpeed);
+        rb.MoveRotation(smoothedRot);
     }
 }

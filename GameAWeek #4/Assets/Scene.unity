@@ -230,7 +230,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   XSpeed: 11
   YSpeed: 11
+  XTilt: 45
+  YTilt: 45
   smoothSpeed: 0.9
+  rotSpeed: 0.15
 --- !u!54 &675304015
 Rigidbody:
   m_ObjectHideFlags: 0
