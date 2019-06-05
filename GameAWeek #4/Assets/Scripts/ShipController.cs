@@ -9,13 +9,12 @@ public class ShipController : MonoBehaviour
     public float XSpeed;
     public float YSpeed;
 
-    public float XTilt;
-    public float YTilt;
+    public float pitch;
+    public float roll;
+    public float yaw;
 
     public float smoothSpeed = 0.1f;
     public float rotSpeed = 0.15f;
-
-
 
     void Start()
     {
@@ -38,9 +37,10 @@ public class ShipController : MonoBehaviour
         rb.MovePosition(smoothedPos);
 
         //Rotation
-        Vector3 moveAngles = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), 0);
-        moveAngles.x *= YTilt;
-        moveAngles.y *= XTilt;
+        Vector3 moveAngles = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), -Input.GetAxis("Horizontal"));
+        moveAngles.x *= pitch;
+        moveAngles.y *= yaw;
+        moveAngles.z *= roll;
         Quaternion moveRotation = Quaternion.Euler(moveAngles);
         Quaternion smoothedRot = Quaternion.Lerp(transform.rotation, moveRotation, rotSpeed);
         rb.MoveRotation(smoothedRot);
