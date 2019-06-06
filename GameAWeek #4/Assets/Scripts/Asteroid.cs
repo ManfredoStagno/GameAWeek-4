@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Asteroid : MonoBehaviour, IPooledObject
+public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 {
     Rigidbody rb;
 
-    public float maxTorque = 1;
-    public float maxVelocity = 20;
+    public float myDamage = 10;
 
-    private void Start()
-    {
-        //rb = GetComponent<Rigidbody>();
-    }
+    public float maxTorque = 1;
+
+    public float minVelocity = 10f;
+    public float maxVelocity = 20f;
 
     public void OnObjectSpawned()
     {
@@ -21,9 +20,29 @@ public class Asteroid : MonoBehaviour, IPooledObject
             (Random.Range(-1, 1) * Random.Range(0f, maxTorque), 
             Random.Range(-1, 1) * Random.Range(0f, maxTorque), 
             Random.Range(-1, 1) * Random.Range(0f, maxTorque));
+        GetComponent<Rigidbody>().AddTorque(torque, ForceMode.Force);
 
         //Randomize Velocity
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -1) * Random.Range(0f, maxVelocity);
-        GetComponent<Rigidbody>().AddTorque(torque, ForceMode.Force);
+        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -1) * Random.Range(minVelocity, maxVelocity);
+    }
+
+    public void OnDamaged(float damage)
+    {
+        Explode();
+    }
+
+    void Explode()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        IDamageable damageable = other.GetComponent<IDamageable>();
+
+        if (damageable != null)
+        {
+            damageable.OnDamaged(myDamage);
+        }
     }
 }

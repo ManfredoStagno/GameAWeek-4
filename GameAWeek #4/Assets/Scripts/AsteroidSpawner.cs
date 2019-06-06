@@ -7,18 +7,23 @@ public class AsteroidSpawner : MonoBehaviour
     ObjectPooler objectPooler;
 
     public float radius = 15f;
-    
+    public int spawnTimer = 25;
+
+    private int counter;
 
     void Start()
     {
-        objectPooler = ObjectPooler.instance;        
+        objectPooler = ObjectPooler.instance;
+        counter = spawnTimer;
     }
 
-    int counter = 50;
     void FixedUpdate()
     {
-        Vector3 point = RandomPointOnSpwaner();
+         SpawnAsteroids(RandomPointOnSpawner());               
+    }
 
+    void SpawnAsteroids(Vector3 point)
+    {
         counter--;
         if (counter == 0)
         {
@@ -26,12 +31,12 @@ public class AsteroidSpawner : MonoBehaviour
             {
                 objectPooler.SpawnFromPool("Asteroid", transform.position + point, Random.rotation);
             }
-            counter = 50;            
+
+            counter = spawnTimer;
         }
-        
     }
 
-    Vector3 RandomPointOnSpwaner()
+    Vector3 RandomPointOnSpawner()
     {
         return new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius), 0);
     }
