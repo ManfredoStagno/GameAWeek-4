@@ -19,12 +19,16 @@ public class CameraController : MonoBehaviour
         Vector3 desiredPosition = player.position+ cameraOffset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;
+        
+        
+        Quaternion desiredRotation = Quaternion.LookRotation(player.position - transform.position + lookOffset);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, lookAtSpeed);
 
-        Vector3 desiredLookAt = player.position + lookOffset;
-        if (currentLookAt == null) currentLookAt = desiredLookAt;
-        Vector3 smoothedLookAt = Vector3.Lerp(currentLookAt, desiredPosition, lookAtSpeed);
-        transform.LookAt(desiredLookAt);
+        //Vector3 desiredLookAt = player.position + lookOffset;
+        //transform.LookAt(desiredLookAt);
+        
 
-        currentLookAt = smoothedLookAt;
     }
+
+    
 }

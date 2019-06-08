@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShipController : MonoBehaviour, IDamageable
 {
     Rigidbody rb;
+    GameManager gm;
     public BulletSpawner bulletSpawner;
 
     public float myHealth = 100;
@@ -26,6 +27,12 @@ public class ShipController : MonoBehaviour, IDamageable
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        gm = GameManager.instance;
+    }
+
+    private void Update()
+    {
+        gm.playerSpeed = speed;
     }
 
     void FixedUpdate()
@@ -42,6 +49,9 @@ public class ShipController : MonoBehaviour, IDamageable
         moveVector.y *= YSpeed;
         Vector3 desiredPos = transform.position + moveVector * Time.deltaTime;
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed);
+
+        smoothedPos = CheckBorders(smoothedPos);
+
         rb.MovePosition(smoothedPos);
 
         //Rotation
@@ -57,11 +67,36 @@ public class ShipController : MonoBehaviour, IDamageable
         rb.MoveRotation(smoothedRot);
     }
 
+    Vector3 CheckBorders(Vector3 smoothedPos)
+    {        
+        if (smoothedPos.x <= gm.left.position.x)
+            smoothedPos.x = gm.left.position.x;
+        else if (smoothedPos.x >= gm.right.position.x)
+            smoothedPos.x = gm.right.position.x;
+
+        if (smoothedPos.y <= gm.bottom.position.y)
+            smoothedPos.y = gm.bottom.position.y;
+        else if (smoothedPos.y >= gm.top.position.y)
+            smoothedPos.y = gm.top.position.y;
+
+        return smoothedPos;
+    }
+
     void Shoot()
     {
         if (Input.GetMouseButton(0))
         {
             bulletSpawner.ShootBullets();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        IDamageable damageable = collision.collider.GetComponent<IDamageable>();
+
+        if (damageable != null)
+        {
+            damageable.OnDamaged(myDamage);
         }
     }
 
@@ -72,6 +107,8 @@ public class ShipController : MonoBehaviour, IDamageable
         {
             Die();
         }
+
+        Debug.Log(myHealth);
     }
 
     private void Die()

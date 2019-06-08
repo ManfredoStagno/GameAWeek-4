@@ -33,16 +33,21 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 
     void Explode()
     {
+        GameObject explosion = Instantiate(Resources.Load("Explosion") as GameObject, transform.position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
+        explosion.transform.localScale *= (transform.localScale.x + transform.localScale.y + transform.localScale.z)/3;
         gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        IDamageable damageable = other.GetComponent<IDamageable>();
-
-        if (damageable != null)
+        if (!collision.collider.CompareTag("Asteroid"))
         {
-            damageable.OnDamaged(myDamage);
+            IDamageable damageable = collision.collider.GetComponent<IDamageable>();
+
+            if (damageable != null)
+            {
+                damageable.OnDamaged(myDamage);
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ public class AsteroidSpawner : MonoBehaviour
 
     void FixedUpdate()
     {
-         SpawnAsteroids(RandomPointOnSpawner());               
+        SpawnAsteroids(RandomPointOnSpawner());        
     }
 
     void SpawnAsteroids(Vector3 point)

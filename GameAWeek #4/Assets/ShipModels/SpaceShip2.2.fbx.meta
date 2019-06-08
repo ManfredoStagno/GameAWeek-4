@@ -13,12 +13,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: EngineBlue
-    second: {fileID: 2100000, guid: 92aebff395fb64c4e806ad2f9378c6d8, type: 2}
+    second: {fileID: 2100000, guid: f4353c641d1984641952b0265d479e87, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: EngineRed
-    second: {fileID: 2100000, guid: f4353c641d1984641952b0265d479e87, type: 2}
+    second: {fileID: 2100000, guid: 676191dc8415edf4eb966fa3c213fa44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pod
+    second: {fileID: 2100000, guid: 8ea0bd54c1cdb864a9298cf0a2a147af, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
