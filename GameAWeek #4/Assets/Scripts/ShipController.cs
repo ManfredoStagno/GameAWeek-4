@@ -8,37 +8,72 @@ public class ShipController : MonoBehaviour, IDamageable
     GameManager gm;
     public BulletSpawner bulletSpawner;
 
-    public float myHealth = 100;
-    private float myDamage = 10000;
 
+    [Space]
+    public float speed;
+    public float minSpeed;
+    public float maxSpeed;
+    [Space]
+    public float startingFuel;
+    public float totalFuelTime;
+    private float remainingFuel;
+    [Space]
     public float XSpeed;
     public float YSpeed;
-    public float speed;
-
+    [Space]
     public float pitch;
     public float roll;
     public float yaw;
-
+    [Space]
+    public float smoothFactor = 0.1f;
     public float smoothSpeed = 0.1f;
     public float rotSpeed = 0.15f;
-
+    [Space]
+    private float myDamage = 10000;
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         gm = GameManager.instance;
-    }
 
-    private void Update()
-    {
-        gm.playerSpeed = speed;
+        remainingFuel = startingFuel;
     }
 
     void FixedUpdate()
     {
+        CalculateSpeed();
         MoveShip();
         Shoot();
+        gm.playerSpeed = speed;
+    }
+
+    private void CalculateSpeed()
+    {
+
+        float desiredSpeed = minSpeed + maxSpeed * CalculateFuel();
+
+        float smoothedSpeed = desiredSpeed;
+        //float smoothedSpeed = Mathf.Lerp(speed, desiredSpeed, smoothFactor);
+
+        speed = smoothedSpeed;
+    }
+
+    private float CalculateFuel()
+    {
+        remainingFuel -= Time.deltaTime;
+
+
+        if (remainingFuel > totalFuelTime)
+            remainingFuel = totalFuelTime;
+        if (remainingFuel < 0)
+        {
+            remainingFuel = 0;
+            minSpeed = 0;
+            Die();
+            return 0f;
+        }
+        return (remainingFuel / totalFuelTime);
     }
 
     void MoveShip()
@@ -60,7 +95,7 @@ public class ShipController : MonoBehaviour, IDamageable
         moveAngles.y *= yaw;
         moveAngles.z *= roll;
         //fix import
-        moveAngles.x *= -1; moveAngles.y += 180f; moveAngles.z *= -1;        
+        moveAngles.x *= -1; moveAngles.y += 180f; moveAngles.z *= -1;
 
         Quaternion moveRotation = Quaternion.Euler(moveAngles);
         Quaternion smoothedRot = Quaternion.Lerp(transform.rotation, moveRotation, rotSpeed);
@@ -90,6 +125,7 @@ public class ShipController : MonoBehaviour, IDamageable
         }
     }
 
+
     private void OnCollisionEnter(Collision collision)
     {
         IDamageable damageable = collision.collider.GetComponent<IDamageable>();
@@ -102,13 +138,9 @@ public class ShipController : MonoBehaviour, IDamageable
 
     public void OnDamaged(float damage)
     {
-        myHealth -= damage;
-        if (myHealth <= 0)
-        {
-            Die();
-        }
-
-        Debug.Log(myHealth);
+        remainingFuel -= damage;
+        
+        Debug.Log(remainingFuel);
     }
 
     private void Die()

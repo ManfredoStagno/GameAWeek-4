@@ -190,10 +190,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be92ccccfe5dee47bb8739fa8d4ef56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myDamage: 10
+  myDamage: 5
   maxTorque: 5
   minVelocity: 30
   maxVelocity: 100
+  maxScale: 3
 --- !u!136 &5099014832252765800
 CapsuleCollider:
   m_ObjectHideFlags: 0

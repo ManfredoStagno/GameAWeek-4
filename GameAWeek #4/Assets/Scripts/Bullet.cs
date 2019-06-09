@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position += transform.up.normalized * speed * Time.deltaTime;
+        transform.position += transform.up.normalized * (speed + GameManager.instance.playerSpeed) * Time.deltaTime;
 
         timer += Time.deltaTime;
         if (timer >= lifeSpan)

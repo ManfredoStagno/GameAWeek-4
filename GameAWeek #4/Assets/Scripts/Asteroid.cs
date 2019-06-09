@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EZCameraShake;
 
 public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 {
@@ -13,6 +14,8 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
     public float minVelocity = 10f;
     public float maxVelocity = 20f;
 
+    public float maxScale = 3;
+
     public void OnObjectSpawned()
     {
         //Randomize Torque
@@ -24,6 +27,9 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 
         //Randomize Velocity
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -1) * Random.Range(minVelocity, maxVelocity);
+
+        //Random Scale
+        transform.localScale = new Vector3(Random.Range(1f, maxScale), Random.Range(1f, maxScale), Random.Range(1f, maxScale));
     }
 
     public void OnDamaged(float damage)
@@ -46,7 +52,11 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 
             if (damageable != null)
             {
-                damageable.OnDamaged(myDamage);
+                float scaleMultiplier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 3;
+
+                damageable.OnDamaged(myDamage * scaleMultiplier);
+
+                CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
             }
         }
     }
