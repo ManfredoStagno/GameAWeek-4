@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EZCameraShake;
 
 public class ShipController : MonoBehaviour, IDamageable
 {
@@ -10,13 +11,15 @@ public class ShipController : MonoBehaviour, IDamageable
 
 
     [Space]
+    [HideInInspector]
     public float speed;
     public float minSpeed;
     public float maxSpeed;
     [Space]
     public float startingFuel;
     public float totalFuelTime;
-    private float remainingFuel;
+    [HideInInspector]
+    public float remainingFuel;
     [Space]
     public float XSpeed;
     public float YSpeed;
@@ -42,10 +45,16 @@ public class ShipController : MonoBehaviour, IDamageable
 
     void FixedUpdate()
     {
-        CalculateSpeed();
-        MoveShip();
-        Shoot();
-        gm.playerSpeed = speed;
+        if (!gm.GAMEISOVER)
+        {
+            CalculateSpeed();
+            MoveShip();
+                  
+        }
+        RotateShip();
+        if (!gm.GAMEISOVER)
+            Shoot(); 
+
     }
 
     private void CalculateSpeed()
@@ -88,7 +97,11 @@ public class ShipController : MonoBehaviour, IDamageable
         smoothedPos = CheckBorders(smoothedPos);
 
         rb.MovePosition(smoothedPos);
+    }
 
+
+    void RotateShip()
+    {
         //Rotation
         Vector3 moveAngles = new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), -Input.GetAxis("Horizontal"));
         moveAngles.x *= pitch;
@@ -138,13 +151,19 @@ public class ShipController : MonoBehaviour, IDamageable
 
     public void OnDamaged(float damage)
     {
+        if (!gm.GAMEISOVER)
+        {
         remainingFuel -= damage;
-        
+        }
+
+        CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
+
         Debug.Log(remainingFuel);
     }
 
     private void Die()
     {
         Debug.Log("You Dead!");
+        gm.GameOver();
     }
 }

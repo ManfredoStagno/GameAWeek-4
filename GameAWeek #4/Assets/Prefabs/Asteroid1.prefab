@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myDamage: 10
-  maxTorque: 5
+  maxTorque: 3
   minVelocity: 30
   maxVelocity: 100
-  maxScale: 3
+  maxScale: 5

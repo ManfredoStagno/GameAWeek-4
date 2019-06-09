@@ -11,6 +11,7 @@ public class AsteroidSpawner : MonoBehaviour
     public float radius = 15f;
     public float minRadius = 0f;
 
+    public bool isAsteroid = true;
     public int astSpawnTimer = 25;
     private int astCounter;
 
@@ -28,7 +29,8 @@ public class AsteroidSpawner : MonoBehaviour
 
     void FixedUpdate()
     {
-        SpawnAsteroids(RandomPointOnSpawner());
+        if(isAsteroid)
+            SpawnAsteroids(RandomPointOnSpawner());
         if(isFuel)
             SpawnFuel(RandomPointOnSpawner());
     }
@@ -72,11 +74,15 @@ public class AsteroidSpawner : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    {        
+    {
+        if (isFuel)
+            Gizmos.color = Color.red;
+        else
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, radius);
+        Gizmos.DrawWireSphere(transform.position, radius);
 
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, minRadius);       
+           
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, minRadius);       
     }
 }

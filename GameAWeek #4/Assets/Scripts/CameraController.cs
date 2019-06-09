@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
 
     public Transform player;
     Camera cam;
+    ShipController playerController;
 
     public Vector3 cameraOffset;
     public float smoothSpeed = .125f;
@@ -18,18 +19,20 @@ public class CameraController : MonoBehaviour
 
     public float minFov;
     public float maxFov;
+    public float fovSpeed = .1f;
 
     private void Start()
     {
         cam = GetComponentInChildren<Camera>();
+        playerController = player.GetComponent<ShipController>();
     }
 
     private void FixedUpdate()
     {
         Vector3 actualOffset;
-        actualOffset = cameraOffset * speedFactor * GameManager.instance.playerSpeed;
+        actualOffset = cameraOffset; // - Vector3.forward * playerController.speed * speedFactor;
 
-        Vector3 desiredPosition = player.position + cameraOffset;
+        Vector3 desiredPosition = player.position + actualOffset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;
 
@@ -41,9 +44,12 @@ public class CameraController : MonoBehaviour
 
     }
 
-    void FovController(float speed)
+    void Fov()
     {
+        float desiredFOV = minFov + (maxFov - minFov) * playerController.speed/playerController.maxSpeed;
+        float smoothedFov = Mathf.Lerp(cam.fieldOfView, desiredFOV, fovSpeed);
 
+        cam.fieldOfView = smoothedFov;        
     }
     
 }

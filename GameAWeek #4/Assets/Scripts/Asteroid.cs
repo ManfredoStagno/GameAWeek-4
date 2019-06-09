@@ -7,6 +7,9 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 {
     Rigidbody rb;
 
+    public float myHealth = 10;
+    private float startingHealth;
+
     public float myDamage = 10;
 
     public float maxTorque = 1;
@@ -15,6 +18,11 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
     public float maxVelocity = 20f;
 
     public float maxScale = 3;
+
+    private void Start()
+    {
+        startingHealth = myHealth;
+    }
 
     public void OnObjectSpawned()
     {
@@ -30,6 +38,9 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
 
         //Random Scale
         transform.localScale = new Vector3(Random.Range(1f, maxScale), Random.Range(1f, maxScale), Random.Range(1f, maxScale));
+
+        //FixHealth
+        myHealth = startingHealth * (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 3;
     }
 
     public void OnDamaged(float damage)
@@ -41,6 +52,7 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
     {
         GameObject explosion = Instantiate(Resources.Load("Explosion") as GameObject, transform.position, Quaternion.LookRotation(Vector3.up, Vector3.forward));
         explosion.transform.localScale *= (transform.localScale.x + transform.localScale.y + transform.localScale.z)/3;
+        CameraShaker.Instance.ShakeOnce(.5f, 4f, .1f, 1f);
         gameObject.SetActive(false);
     }
 
@@ -54,9 +66,7 @@ public class Asteroid : MonoBehaviour, IPooledObject, IDamageable
             {
                 float scaleMultiplier = (transform.localScale.x + transform.localScale.y + transform.localScale.z) / 3;
 
-                damageable.OnDamaged(myDamage * scaleMultiplier);
-
-                CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
+                damageable.OnDamaged(myDamage * scaleMultiplier);                
             }
         }
     }
