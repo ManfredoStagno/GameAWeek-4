@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using EZCameraShake;
 
 public class ShipController : MonoBehaviour, IDamageable
 {
     Rigidbody rb;
     GameManager gm;
+    AudioSource audioSource;
     public BulletSpawner bulletSpawner;
 
-
+    public AudioClip hitClip;
     [Space]
     [HideInInspector]
     public float speed;
@@ -39,6 +38,7 @@ public class ShipController : MonoBehaviour, IDamageable
     {
         rb = GetComponent<Rigidbody>();
         gm = GameManager.instance;
+        audioSource = GetComponent<AudioSource>();
 
         remainingFuel = startingFuel;
     }
@@ -156,7 +156,12 @@ public class ShipController : MonoBehaviour, IDamageable
         remainingFuel -= damage;
         }
 
-        CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
+
+        if (Mathf.Sign(damage) > 0) //If it's not fuel
+        {
+            CameraShaker.Instance.ShakeOnce(4f, 4f, .1f, 1f);
+            audioSource.PlayOneShot(hitClip);
+        }
 
         Debug.Log(remainingFuel);
     }

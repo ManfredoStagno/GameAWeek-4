@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
     public Text scoreText;
 
+    Text gameOverText;
+
     public GameObject gameOver;
 
 
     private void Start()
     {
-        gameOver.SetActive(false);
+        if(gameOver)
+            gameOver.SetActive(false);
     }
 
     void Update()
@@ -21,7 +22,8 @@ public class Score : MonoBehaviour
 
         if (GameManager.instance.GAMEISOVER)
         {
-            gameOver.SetActive(true);
+            if (gameOver)
+                gameOver.SetActive(true);
         }
     }
 }

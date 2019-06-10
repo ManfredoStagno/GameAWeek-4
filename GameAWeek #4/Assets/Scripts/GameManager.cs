@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -20,6 +18,8 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+    //[HideInInspector]
+    AudioSource mainAudioSource;
 
     public Transform player;
 
@@ -36,6 +36,11 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public float score;
 
+    private void Start()
+    {
+        mainAudioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         if (!GAMEISOVER)
@@ -44,6 +49,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            mainAudioSource.volume = Mathf.Lerp(mainAudioSource.volume, 0, 0.01f);
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
